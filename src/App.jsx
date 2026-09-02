@@ -16,7 +16,7 @@ import {
   BellRing,
   Target,
 } from "lucide-react";
-import { audio } from "./audio";
+import { audio } from "./Audio";
 
 const COMIC_WORDS = [
   "POW!",
