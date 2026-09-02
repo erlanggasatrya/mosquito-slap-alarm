@@ -12,6 +12,12 @@ class HighPowerSoundEngine {
     this.customSounds = {
       slap: null,
       explosion: null,
+      penalty: null,
+      alarm: null,
+    };
+    this.customSoundGains = {
+      slap: null,
+      explosion: null,
       alarm: null,
     };
   }
@@ -62,10 +68,28 @@ class HighPowerSoundEngine {
     return this.customSounds[name];
   }
 
-  playCustomSound(name, source, fallback) {
-    if (this.isMuted) return;
-
+  connectCustomSound(name, source, gainValue) {
     const sound = this.getCustomSound(name, source);
+    if (!this.customSoundGains[name]) {
+      const sourceNode = this.ctx.createMediaElementSource(sound);
+      const gainNode = this.ctx.createGain();
+      sourceNode.connect(gainNode);
+      gainNode.connect(this.masterGain);
+      this.customSoundGains[name] = gainNode;
+    }
+    this.customSoundGains[name].gain.setValueAtTime(
+      gainValue,
+      this.ctx.currentTime,
+    );
+    return sound;
+  }
+
+  playCustomSound(name, source, gainValue, fallback) {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx || !this.masterGain) return;
+
+    const sound = this.connectCustomSound(name, source, gainValue);
     sound.currentTime = 0;
     const playback = sound.play();
     playback?.catch(() => {
@@ -79,7 +103,7 @@ class HighPowerSoundEngine {
     if (this.isMuted) return;
 
     this.stopAlarm();
-    const alarm = this.getCustomSound("alarm", "/audio/oke-gas.mp3");
+    const alarm = this.connectCustomSound("alarm", "/audio/oke-gas.mp3", 0.35);
     alarm.loop = true;
     alarm.currentTime = 0;
     const playback = alarm.play();
@@ -146,6 +170,7 @@ class HighPowerSoundEngine {
     this.playCustomSound(
       "slap",
       "/audio/hidup-jokowi.mp3",
+      1.6,
       () => this.playSyntheticSlap(),
     );
   }
@@ -203,6 +228,7 @@ class HighPowerSoundEngine {
     this.playCustomSound(
       "explosion",
       "/audio/jokowi-saya-akan-lawan.mp3",
+      1.8,
       () => this.playSyntheticExplosion(),
     );
   }
@@ -254,6 +280,15 @@ class HighPowerSoundEngine {
   }
 
   playPenalty() {
+    this.playCustomSound(
+      "penalty",
+      "/audio/prabowo-sorry-ye.mp3",
+      1.6,
+      () => this.playSyntheticPenalty(),
+    );
+  }
+
+  playSyntheticPenalty() {
     if (this.isMuted) return;
     this.init();
     if (!this.ctx) return;
