@@ -142,7 +142,7 @@ export default function App() {
     return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
   });
 
-  const TOTAL_HITS = 10; // Default 10 Hit Murni
+  const TOTAL_HITS = 5; // Default 5 Hit Murni
   const [remainingHits, setRemainingHits] = useState(TOTAL_HITS);
   const [speedMultiplier, setSpeedMultiplier] = useState(1.0);
   const [misses, setMisses] = useState(0);
