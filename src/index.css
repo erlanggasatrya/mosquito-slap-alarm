@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes customShake {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  15% {
+    transform: translate(-18px, 14px) rotate(-5deg);
+  }
+  30% {
+    transform: translate(18px, -14px) rotate(5deg);
+  }
+  45% {
+    transform: translate(-14px, -10px) rotate(-3deg);
+  }
+  60% {
+    transform: translate(14px, 10px) rotate(3deg);
+  }
+  75% {
+    transform: translate(-8px, 6px) rotate(-1deg);
+  }
+  90% {
+    transform: translate(8px, -6px) rotate(1deg);
+  }
+}
+
+.anim-shake-extreme {
+  animation: customShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes popComic {
+  0% {
+    transform: scale(0.1) rotate(-30deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.4) rotate(12deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.anim-pop {
+  animation: popComic 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes wingFlutter {
+  0%,
+  100% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  50% {
+    transform: scaleY(0.15) rotate(15deg);
+  }
+}
+
+.anim-wings {
+  animation: wingFlutter 0.04s infinite linear;
+}
+
+@keyframes bombDangerPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+.anim-bomb-danger {
+  animation: bombDangerPulse 0.35s infinite ease-in-out;
+}
+
+@keyframes pendulumSwing {
+  0%,
+  100% {
+    transform: rotate(18deg);
+  }
+  50% {
+    transform: rotate(-18deg);
+  }
+}
+
+.anim-pendulum {
+  transform-origin: top center;
+  animation: pendulumSwing 1.2s infinite ease-in-out;
+}
+
+@keyframes clockBounce {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.03) translateY(-4px);
+  }
+}
+
+.anim-clock-tock {
+  animation: clockBounce 1s infinite ease-in-out;
+}
+
+.comic-shadow {
+  box-shadow: 4px 4px 0px 0px #09090b;
+}
+
+.comic-shadow-lg {
+  box-shadow: 6px 6px 0px 0px #09090b;
+}
+
+.comic-shadow-sm {
+  box-shadow: 2px 2px 0px 0px #09090b;
+}
+
+/* Mobile Touch Optimization & Anti-Ghosting */
+* {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  overscroll-behavior: none;
+}
