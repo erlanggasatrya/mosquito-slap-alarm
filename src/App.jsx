@@ -1086,7 +1086,7 @@ export default function App() {
 
             <div className="bg-white border-4 border-zinc-900 px-5 py-1.5 rounded-2xl comic-shadow-lg transform -rotate-1">
               <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-zinc-900">
-                10 Nyamuk Terbasmi!
+                {`${TOTAL_HITS} Nyamuk Terbasmi!`}
               </h2>
             </div>
 
