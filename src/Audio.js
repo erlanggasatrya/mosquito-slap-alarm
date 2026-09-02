@@ -9,6 +9,11 @@ class HighPowerSoundEngine {
     this.buzzGain = null;
     this.lfo = null;
     this.isMuted = false;
+    this.customSounds = {
+      slap: null,
+      explosion: null,
+      alarm: null,
+    };
   }
 
   init() {
@@ -36,9 +41,55 @@ class HighPowerSoundEngine {
         this.ctx.currentTime,
       );
     }
+    Object.entries(this.customSounds).forEach(([name, sound]) => {
+      if (!sound) return;
+      sound.muted = muted;
+      if (muted && name !== "alarm") {
+        sound.pause();
+        sound.currentTime = 0;
+      }
+    });
+  }
+
+  getCustomSound(name, source) {
+    if (!this.customSounds[name]) {
+      const sound = new window.Audio(source);
+      sound.preload = "auto";
+      sound.volume = 1;
+      sound.muted = this.isMuted;
+      this.customSounds[name] = sound;
+    }
+    return this.customSounds[name];
+  }
+
+  playCustomSound(name, source, fallback) {
+    if (this.isMuted) return;
+
+    const sound = this.getCustomSound(name, source);
+    sound.currentTime = 0;
+    const playback = sound.play();
+    playback?.catch(() => {
+      // Tetap gunakan suara sintetis jika file custom belum tersedia/gagal diputar.
+      fallback();
+    });
   }
 
   startAlarm() {
+    this.init();
+    if (this.isMuted) return;
+
+    this.stopAlarm();
+    const alarm = this.getCustomSound("alarm", "/audio/oke-gas.mp3");
+    alarm.loop = true;
+    alarm.currentTime = 0;
+    const playback = alarm.play();
+    playback?.catch(() => {
+      this.stopAlarm();
+      this.startSyntheticAlarm();
+    });
+  }
+
+  startSyntheticAlarm() {
     this.init();
     if (!this.ctx) return;
     this.stopAlarm();
@@ -92,6 +143,14 @@ class HighPowerSoundEngine {
   }
 
   playSlap() {
+    this.playCustomSound(
+      "slap",
+      "/audio/hidup-jokowi.mp3",
+      () => this.playSyntheticSlap(),
+    );
+  }
+
+  playSyntheticSlap() {
     if (this.isMuted) return;
     this.init();
     if (!this.ctx) return;
@@ -141,6 +200,14 @@ class HighPowerSoundEngine {
   }
 
   playExplosion() {
+    this.playCustomSound(
+      "explosion",
+      "/audio/jokowi-saya-akan-lawan.mp3",
+      () => this.playSyntheticExplosion(),
+    );
+  }
+
+  playSyntheticExplosion() {
     if (this.isMuted) return;
     this.init();
     if (!this.ctx) return;
@@ -234,6 +301,11 @@ class HighPowerSoundEngine {
     if (this.sirenInterval) {
       clearInterval(this.sirenInterval);
       this.sirenInterval = null;
+    }
+    const alarm = this.customSounds.alarm;
+    if (alarm) {
+      alarm.pause();
+      alarm.currentTime = 0;
     }
     try {
       this.sirenOsc?.stop();
